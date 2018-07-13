@@ -1,0 +1,28 @@
+{
+	"data": {
+		"id": 1,
+		"nome": "Gold",
+		"valor": 100.00,
+		"descricao_resumida": "Plano odontologico...",
+		"id_produto_externo": 1,
+		"codigo_campanha": "XAB1",
+		"chave_arquivo_condicoes_gerais": "100XAQ",
+		"parceiro": {
+			"id": 1,
+			"nome": "Empresa A",
+			"ativo": true
+		},
+		"procedimentos": [{
+			"id": 1,
+			"codigo": 1,
+			"nome": "Manutenção de dentadura",
+			"descricao": "Limpeza e correção"	
+		}, {
+			"id": 2,
+			"codigo": 2,
+			"nome": "Limpeza",
+			"descricao": "Limpeza e remoção de tartáro"
+		}],
+		"ativo": true
+	}
+}
