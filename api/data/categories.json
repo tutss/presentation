@@ -1,0 +1,14 @@
+[
+	{
+		"id": 0,
+		"nome": "Seguro de Vida"
+	},
+	{
+		"id": 1,
+		"nome": "Serviço de Streaming"
+	},
+	{
+		"id": 2,
+		"nome": "Serviço automotivo"
+	}
+]

@@ -1,0 +1,107 @@
+/*.header {
+	background-color: orange;
+}
+.produtos {
+	background-color: #378490;
+}
+.categoria {
+	background-color: #f54608;
+}
+.parceiro {
+	background-color: #2399f6;
+}*/
+
+body {
+	background-color: #FF5722;
+	margin: 0;
+  font-family: "Titillium Web";
+  height: 100%;
+}
+
+.header {
+	background-color: #448AFF;
+	text-align: center;
+  	margin: 0;
+  	width: 100%;	
+  	height: 100%;
+  	color: #212121;
+}
+
+#special-card {
+    margin-bottom: 60px;
+}
+
+#div_header {
+	margin-bottom: 100px;
+}
+
+.card {
+	background-color: #dddddd;
+	padding: 1.2em 1.2em;
+	margin: 1.2em 1.2em;
+	float: left;
+	text-align: center;
+	color: #333333;
+	width: 27.35%;
+	box-shadow: 0 10px 8px 0 rgba(0,0,0,0.2);
+	transition: 0.3s;
+}
+
+
+a p {
+	color: #212121;
+}
+
+.footer {
+	background-color: #757575;
+  	width: 100%;
+  	height: 50px;
+  	position: fixed;
+  	bottom: 0;
+  	left: 0;
+  	margin: 0;
+  	padding: 0;
+  	text-align: center;
+  	float: left;
+
+}
+
+form {
+	text-align: center;
+	background-color: #dddddd;
+	margin: 0 auto;
+	padding: 0;
+	width: 40%;
+}
+
+input[type=text] {
+    width: 40%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 40%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+.special-div {
+    border-radius: 5px;
+    background-color: #FF5722;
+    padding: 20px;
+    margin: 0 auto;
+}

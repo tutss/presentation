@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>API PnP</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,700" rel="stylesheet">
+</head>
+<body>
+	<div class='header'>
+	    <h1 class='header' id='div_header'>API PnP</h1>
+	    <p class='header'>Teste para as chamadas da plataforma do PnP</p>
+	</div>
+	<br><br><br>
+	<div class='special-div'>
+		<form method=post enctype=multipart/form-data>			
+			<label for="rg">RG</label>
+			<p><input type="text" name=rg placeholder="RG"></p>
+			<label for="id_p">ID do Produto</label>
+			<p><input type="text" name=id_p placeholder="ID"></p>
+			<input type="submit" value=Submit>
+		</form>
+	</div>
+</body>
+</html>

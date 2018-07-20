@@ -1,0 +1,29 @@
+[
+	{
+        "nome": "Produto B",
+        "id": 1,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 11,
+        "caracteristicas": {
+            "Regiao": ["Rio de Janeiro", "Itu", "Recife"],
+            "Número de telas": 4,
+            "Definicao": "4k"
+        },
+        "descricao": "Produto B, show"
+    },
+    {
+        "nome": "Produto D",
+        "id": 3,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 13,
+        "caracteristicas": {
+            "Avaliãção": ["Salvador", "Itu", "Recife"],
+            "Numero de telas": 2,
+            "Definicao": "4k"
+        },
+        "descricao": "Produto D, uau"
+
+    }
+]
