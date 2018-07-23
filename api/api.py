@@ -26,7 +26,6 @@ id_para_checar = 0
 
 # TODOS
 # TODO: Debugar lógica da cotacao
-# todo: melhorar o display
 
 
 @app.route('/', methods=['GET'])
@@ -255,12 +254,12 @@ def cotacao():
             return redirect(request.url)
 
         cliente_info = {
-            "nome": request.form['name'],
-            "age": request.form['age'],
-            "cpf": request.form['cpf'],
-            "rg": request.form['rg'],
-            "profissao": request.form['profissao'],
-            "id_produto": request.form['id_p']
+            "nome": str(request.form['name']),
+            "age": int(request.form['age']),
+            "cpf": int(request.form['cpf']),
+            "rg": int(request.form['rg']),
+            "profissao": str(request.form['profissao']),
+            "id_produto": list(request.form['id_p'])
         }
 
         id_produto = int(request.form['id_p'])
@@ -275,11 +274,20 @@ def cotacao():
 
             produtos_cliente[file_num] = remove_duplicates(produtos_cliente[file_num])
 
-            # TODO: arrumar o update, adicionar apenas o novo id produto pro usuario
             if cliente_info:
                 file_name = 'users/%d.json' % file_num
-                with open(file_name, 'a') as f:
-                    json.dump(cliente_info, f)
+                with open(file_name, 'r+') as f:
+                    if os.path.getsize(file_name) <= 0:
+                        print('loop do vazio')
+                        json.dump(cliente_info, f)
+                    else:
+                        data = f.read()
+                        dict_data = json.loads(data)
+                        if bool(dict_data):
+                            dict_data['id_produto'].append(str(id_produto))
+                        f.seek(0)
+                        f.truncate()
+                        json.dump(dict_data, f)
 
             # DEBUG
             # for key, value in produtos_cliente.items():
