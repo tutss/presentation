@@ -17,7 +17,8 @@ form {
   text-align: center;
   background-color: #dddddd;
   margin: 0 auto;
-  padding: 0;
+  padding-left: 10px;
+  padding-right: 10px;
   width: 40%;
 }
 
@@ -45,6 +46,30 @@ input[type=submit] {
 input[type=submit]:hover {
     background-color: #45a049;
 }
+
+/* Dropdown Content (Hidden by Default) */
+.drop-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.drop-content a {
+    color: #212121;
+    padding: 5px 10px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.drop-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display: contents;}
 
 .header {
 	background-color: #448AFF;

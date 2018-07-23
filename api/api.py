@@ -1,13 +1,12 @@
 import flask
 import json
 import os
-import requests
-from flask import request, jsonify, render_template, redirect, url_for, flash
+from flask import request, jsonify, render_template, redirect
 from werkzeug.utils import secure_filename
 
 # salva o upload em json
 UPLOAD_FOLDER = 'data/upload/'
-ALLOWED_EXTENSIONS = set(['json'])
+ALLOWED_EXTENSIONS = set('json')
 
 # configurações do flask
 app = flask.Flask(__name__)
@@ -20,15 +19,13 @@ json_partners = json.load(open('data/partners.json', 'r'))
 json_categories = json.load(open('data/categories.json', 'r'))
 
 # Exemplifica os produtos de um usuário
-produtos_cliente = { }
+produtos_cliente = {}
 usuario = 0
 id_para_checar = 0
 
 
 # TODOS
-# TODO: Formatar o código
 # TODO: Debugar lógica da cotacao
-# TODO: Retirar prints
 # todo: melhorar o display
 
 
@@ -62,6 +59,8 @@ def product_by_id():
 
     verify_bounds(n_id, len(json_products))
 
+    # changed
+    produto_especifico = {}
     for elem in json_products:
         if elem['id'] == n_id:
             produto_especifico = elem
@@ -101,6 +100,7 @@ def products_by_partner():
     else:
         return 'Error: No id_parceiro provided'
 
+    # changed
     produtos_parceiro = []
     for elem in json_products:
         if elem['id_parceiro'] == n_parceiro:
@@ -117,11 +117,12 @@ def product_caract():
     """
     if 'id' in request.args:
         n_id = int(request.args['id'])
-    else :
+    else:
         return 'Error: No id provided'
 
     verify_bounds(n_id, len(json_products))
 
+    produto_especifico = []
     for elem in json_products:
         if elem['id'] == n_id:
             produto_especifico = elem['caracteristicas']
@@ -151,7 +152,7 @@ def param_necessarios():
     """
     Recebe os parâmetros para repassar para o parceiro
     """
-    json_received = json.load(open('data/params.json','r'))
+    json_received = json.load(open('data/params.json', 'r'))
     return jsonify(json_received)
 
 
@@ -165,19 +166,20 @@ def required_for_logic():
         return render_template('envia.html')
     elif request.method == 'POST':
         if 'file' not in request.files:
-            flash('No file part')
+            print('No file part')
             return redirect(request.url)
+
         file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
+
         if file.filename == '':
-            flash('No selected file')
+            print('No selected file')
             return redirect(request.url)
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect('/')
 
+        return redirect('/')
     return ''
 
 
@@ -196,6 +198,7 @@ def updated_listing_inverse():
         ids.append(elem['id'])
 
     show_products = json_products.copy()
+
     for i in range(len(ids)):
         del show_products[ids[i]]
         ids[:] = [x - 1 for x in ids]
@@ -223,6 +226,7 @@ def updated_listing_order():
     first_to_remove = ids[0]
     partner = show_products[first_to_remove]['id_parceiro']
     filtered_products = []
+
     for product in show_products:
         if product['id_parceiro'] == partner:
             if product['id'] in ids:
@@ -287,6 +291,7 @@ def cotacao():
         id_para_checar = id_produto
 
         return redirect('/contrata')
+
     return ''
 
 
@@ -301,11 +306,8 @@ def contrata_produto():
     elif request.method == 'POST':
         if 'submit_form' in request.form:
             option = int(request.form['activity'])
-            print('Opção: ', option)
-            print('Tipo: ', type(option))
             if not option:
                 produtos_cliente[usuario].pop()
-                print('Produto removido')
             return redirect('/cotacao')
 
 
@@ -316,8 +318,8 @@ def consulta_produtos_cliente():
     """
     if request.args.get('cliente') is None:
         return 'Error: missing cliente argument'
+
     cliente = int(request.args.get('cliente'))
-    print('Verificando os produtos do cliente na base')
     return jsonify(produtos_cliente[cliente])
 
 
@@ -329,7 +331,6 @@ def cancelar_produto():
     if request.method == 'GET':
         return render_template('cancela.html')
     elif request.method == 'POST':
-        print('Iniciando o cancelamento')
         check_fields = 'id_p' or 'rg'
         if check_fields not in request.form:
             print('Missing fields')
@@ -345,13 +346,14 @@ def cancelar_produto():
                     produto = produtos[i]
                     if produto['id'] == id_remover:
                         produtos.remove(produto)
-                        print('Produto removido')
                         break
             else:
                 return 'Invalid ID'
         else:
             return 'User unavailable'
+
         return redirect('/cotacao')
+
     return ''
 
 
@@ -382,8 +384,9 @@ def contains_id(li, ident):
         elem = li[i]
         if elem['id'] == ident:
             return True
-        if i == len(li) -1 and elem['id'] != ident:
+        if i == len(li) - 1 and elem['id'] != ident:
             return False
+
     return True
 
 
@@ -414,7 +417,7 @@ def verify_product_kvs(produtos_entrada):
                     pass
                 else:
                     log_file = open('log.txt', 'a')
-                    string_log = '%s com valores adulterados pelo parceiro %d\n' % (produto_para_checar['nome'],
+                    string_log = '%s com valores adulterados pelo parceiro %d\n' % (produto_para_checar['nome'],\
                                                                                   produto_para_checar['id_parceiro'])
                     string_log_expected = 'Esperado: {valor_esperado}\nRecebido: {value}\n\n'\
                         .format(valor_esperado=valor_esperado, value=value)

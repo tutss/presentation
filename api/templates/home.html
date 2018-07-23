@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
 	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,700" rel="stylesheet">
+	<script type="text/javascript" src="{{ url_for('static',filename='js/list.js') }}"></script>
 </head>
 <body>
 	<div class='header' id='main-header'>
@@ -12,35 +13,45 @@
 	    <h3 class='header'>Teste para as chamadas da plataforma do PnP</h3>
 	</div>
 	<div class='produtos card'>
-		<h2>Produtos</h2>
-		<a href="/products"><p>Disponibilização de todos os produtos</p></a>
-		<a href="/product_id?id="><p>Disponibilização de um produto específico</p></a>
-		<a href="/products_categ?id_categoria="><p>Disponibilização por categoria</p></a>
-		<a href="/products_parceiro?id_parceiro="><p>Disponibilização por parceiro</p></a>
-		<a href="/product_caract?id="><p>Disponibilização das características de um produto</p></a>
+		<h2 onclick="drop_pr()" class="dropbtn">Produtos</h2>
+		<div id="my-drop-pr" class="drop-content">
+			<a href="/products"><p>Disponibilização de todos os produtos</p></a>
+			<a href="/product_id?id="><p>Disponibilização de um produto específico</p></a>
+			<a href="/products_categ?id_categoria="><p>Disponibilização por categoria</p></a>
+			<a href="/products_parceiro?id_parceiro="><p>Disponibilização por parceiro</p></a>
+			<a href="/product_caract?id="><p>Disponibilização das características de um produto</p></a>		
+		</div>
 	</div>
 	<div class='categoria card'>
-		<h2>Categoria</h2>
-		<a href="/categorias"><p>Disponibiliza todas as categorias</p></a>
-		<a href="/products_categ?id_categoria="><p>Disponibilização por categoria</p></a>
+		<h2 onclick="drop_ca()" class="dropbtn">Categoria</h2>
+		<div id="my-drop-ca" class="drop-content">
+			<a href="/categorias"><p>Disponibiliza todas as categorias</p></a>
+			<a href="/products_categ?id_categoria="><p>Disponibilização por categoria</p></a>
+		</div>
 	</div>
 	<div class='parceiro card'>
-		<h2>Parceiro</h2>
-		<a href="/parceiros"><p>Disponibiliza todos os parceiros</p></a>
-		<a href="/products_parceiro?id_parceiro="><p>Disponibilização por parceiro</p></a>
+		<h2 onclick="drop_pa()" class="dropbtn">Parceiro</h2>
+		<div id="my-drop-pa" class="drop-content">
+			<a href="/parceiros"><p>Disponibiliza todos os parceiros</p></a>
+			<a href="/products_parceiro?id_parceiro="><p>Disponibilização por parceiro</p></a>
+		</div>
 	</div>
 	<div class='oferta card' id='special-card'>
-		<h2>Oferta</h2>
-		<a href="/recebe_param"><p>Recebe parâmetros para realizar a lógica</p></a>
-		<a href="/envia_parceiro"><p>Manda os parâmetros para o parceiro</p></a>
-		<a href="/recebe_produtos_inverse"><p>Recebe a lista de produtos do parceiro (de quais não mostrar)</p></a>
-		<a href="/recebe_produtos_order"><p>Recebe a lista de produtos do parceiro (de quais mostrar)</p></a>
+		<h2 onclick="drop_of()" class="dropbtn">Oferta</h2>
+		<div id="my-drop-of" class="drop-content">
+			<a href="/recebe_param"><p>Recebe parâmetros para realizar a lógica</p></a>
+			<a href="/envia_parceiro"><p>Manda os parâmetros para o parceiro</p></a>
+			<a href="/recebe_produtos_inverse"><p>Recebe a lista de produtos do parceiro (de quais não mostrar)</p></a>
+			<a href="/recebe_produtos_order"><p>Recebe a lista de produtos do parceiro (de quais mostrar)</p></a>
+		</div>
 	</div>
 	<div class="cliente card">
-		<h2>Cliente</h2>
-		<a href="/cotacao"><p>Dados do cliente</p></a>
-		<a href="/consulta_produtos"><p>Consulta os produtos contratados pelo cliente</p></a>
-		<a href="cancelar_produto"><p>Cancela um produto para o cliente</p></a>
+		<h2 onclick="drop_cl()" class="dropbtn">Cliente</h2>
+		<div id="my-drop-cl" class="drop-content">
+			<a href="/cotacao"><p>Dados do cliente</p></a>
+			<a href="/consulta_produtos"><p>Consulta os produtos contratados pelo cliente</p></a>
+			<a href="cancelar_produto"><p>Cancela um produto para o cliente</p></a>
+		</div>
 	</div>
 
 	<footer class="footer">
