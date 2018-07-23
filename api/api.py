@@ -29,14 +29,13 @@ id_para_checar = 0
 # TODO: Formatar o código
 # TODO: Debugar lógica da cotacao
 # TODO: Retirar prints
-# todo: melhoras comentários
 # todo: melhorar o display
 
 
 @app.route('/', methods=['GET'])
 def home():
     """
-    Home
+    Home - renderiza a tela inicial
     """
     return render_template('home.html')
 
@@ -44,7 +43,7 @@ def home():
 @app.route('/products', methods=['GET'])
 def products():
     """
-    Retorna todos os produtos
+    Retorna todos os produtos da base interna
     """
     return jsonify(json_products)
 
@@ -52,7 +51,9 @@ def products():
 @app.route('/product_id', methods=['GET'])
 def product_by_id():
     """
-    Retorna o produto especificado pelo ID
+    Retorna o produto especificado pelo ID da base interna
+
+    :param: id: o id do produto no request
     """
     if 'id' in request.args:
         n_id = int(request.args['id'])
@@ -72,6 +73,7 @@ def product_by_id():
 def products_by_categ():
     """
     Retorna os produtos de determinada categoria
+    :param: id: o id da categoria no request
     """
     if 'id_categoria' in request.args:
         n_categoria = int(request.args['id_categoria'])
@@ -92,6 +94,7 @@ def products_by_categ():
 def products_by_partner():
     """
     Retorna todos os produtos de determinado parceiro
+    :param: id: o id do parceiro no request
     """
     if 'id_parceiro' in request.args:
         n_parceiro = int(request.args['id_parceiro'])
@@ -110,6 +113,7 @@ def products_by_partner():
 def product_caract():
     """
     Retorna a característica de um produto específico
+    :param: id: o id do produto no request
     """
     if 'id' in request.args:
         n_id = int(request.args['id'])
@@ -128,7 +132,7 @@ def product_caract():
 @app.route('/parceiros', methods=['GET'])
 def partners():
     """
-    Retorna todos os parceiros da plataforma
+    Retorna todos os parceiros da base
     """
     return jsonify(json_partners)
 
@@ -136,24 +140,26 @@ def partners():
 @app.route('/categorias', methods=['GET'])
 def categories():
     """
-    Retorna todas as categorias do sistema
+    Retorna todas as categorias da base
     """
     return jsonify(json_categories)
 
 
+# Método para exemplo
 @app.route('/recebe_param', methods=['GET'])
 def param_necessarios():
     """
-    Recebe os parâmetros para realizar a lógica
+    Recebe os parâmetros para repassar para o parceiro
     """
     json_received = json.load(open('data/params.json','r'))
     return jsonify(json_received)
 
 
-@app.route('/envia_parceiro', methods=['GET','POST'])
+# Método para exemplo
+@app.route('/envia_parceiro', methods=['GET', 'POST'])
 def required_for_logic():
     """
-    Manda para o parceiro os parâmetros
+    Manda para o parceiro os parâmetros necessários
     """
     if request.method == 'GET':
         return render_template('envia.html')
@@ -175,13 +181,14 @@ def required_for_logic():
     return ''
 
 
+# Método de exemplo
 @app.route('/recebe_produtos_inverse', methods=['GET'])
 def updated_listing_inverse():
     """
-    Lista os novos produtos
+    Lista os novos produtos que chegariam do parceiro
+
+    Esse método recebe os produtos nos quais não deve disponibilizar.
     """
-#     Ler só os ids
-#     Parceiro passa quais não irá mostrar
     ids = []
     new_products = json.load(open('data/updated_products.json', 'r'))
     verify_product_kvs(new_products)
@@ -201,6 +208,11 @@ def updated_listing_inverse():
 
 @app.route('/recebe_produtos_order', methods=['GET'])
 def updated_listing_order():
+    """
+    Lista os novos produtos que chegariam do parceiro
+
+    Esse método recebe os produtos nos quais  deve disponibilizar.
+    """
     ids = []
     new_products = json.load(open('data/order_updated_products.json', 'r'))
     verify_product_kvs(new_products)
@@ -226,12 +238,16 @@ def updated_listing_order():
 
 @app.route('/cotacao', methods=['GET', 'POST'])
 def cotacao():
+    """
+    Simula o envio dos dados do cliente para o parceiro,
+    para que este realize sua lógica e retorne o valor.
+    """
     if request.method == 'GET':
         return render_template('form.html')
     elif request.method == 'POST':
         check_fields = 'name' or 'age' or 'cpf' or 'rg' or 'profissao'
         if check_fields not in request.form:
-            flash('Missing fields')
+            print('Missing fields')
             return redirect(request.url)
 
         cliente_info = {
@@ -276,6 +292,10 @@ def cotacao():
 
 @app.route('/contrata', methods=['GET', 'POST'])
 def contrata_produto():
+    """
+    Simula a confirmação de contrato de um produto,
+    feita pelo cliente
+    """
     if request.method == 'GET':
         return render_template('confirmacao.html')
     elif request.method == 'POST':
@@ -291,6 +311,9 @@ def contrata_produto():
 
 @app.route('/consulta_produtos', methods=['GET'])
 def consulta_produtos_cliente():
+    """
+    Confere os produtos contratados pelo cliente
+    """
     if request.args.get('cliente') is None:
         return 'Error: missing cliente argument'
     cliente = int(request.args.get('cliente'))
@@ -300,6 +323,9 @@ def consulta_produtos_cliente():
 
 @app.route('/cancelar_produto', methods=['GET', 'POST'])
 def cancelar_produto():
+    """
+    Cancela um produto previamente contratado pelo cliente
+    """
     if request.method == 'GET':
         return render_template('cancela.html')
     elif request.method == 'POST':
@@ -334,7 +360,6 @@ def cancelar_produto():
 #  MÉTODOS AUXILIARES AS ROTAS          #
 #                                       #
 #########################################
-
 
 def remove_duplicates(li):
     """
@@ -373,6 +398,12 @@ def verify_bounds(n, size):
 
 
 def verify_product_kvs(produtos_entrada):
+    """
+    Verifica as chaves e valores de retorno do parceiro,
+    para assim, verificar possíveis adulterações e/ou quebras
+    de contrato
+    :param produtos_entrada: lista de produtos
+    """
     for elem in produtos_entrada:
         id_elem = elem['id']
         produto_para_checar = json_products[id_elem]
@@ -385,8 +416,8 @@ def verify_product_kvs(produtos_entrada):
                     log_file = open('log.txt', 'a')
                     string_log = '%s com valores adulterados pelo parceiro %d\n' % (produto_para_checar['nome'],
                                                                                   produto_para_checar['id_parceiro'])
-                    string_log_expected = 'Esperado: {valor_esperado}\nRecebido: {value}\n\n'.format(valor_esperado=valor_esperado,
-                                                                                                   value=value)
+                    string_log_expected = 'Esperado: {valor_esperado}\nRecebido: {value}\n\n'\
+                        .format(valor_esperado=valor_esperado, value=value)
                     log_file.write(string_log)
                     log_file.write(string_log_expected)
                     log_file.close()
@@ -394,6 +425,10 @@ def verify_product_kvs(produtos_entrada):
 
 
 def allowed_file(filename):
+    """
+    Checa e salva em um arquivo dado nome do arquivo
+    :param filename: nome do arquivo
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
