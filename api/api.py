@@ -24,10 +24,6 @@ usuario = 0
 id_para_checar = 0
 
 
-# TODOS
-# TODO: Debugar lógica da cotacao
-
-
 @app.route('/', methods=['GET'])
 def home():
     """
@@ -44,92 +40,44 @@ def products():
     return jsonify(json_products)
 
 
-@app.route('/product_id', methods=['GET'])
-def product_by_id():
+@app.route('/products/<ident>', methods=['GET'])
+def product_by_id(ident):
     """
     Retorna o produto especificado pelo ID da base interna
 
     :param: id: o id do produto no request
     """
-    if 'id' in request.args:
-        n_id = int(request.args['id'])
-    else:
-        return 'Error: No ID provided'
-
-    verify_bounds(n_id, len(json_products))
-
-    # changed
-    produto_especifico = {}
-    for elem in json_products:
-        if elem['id'] == n_id:
-            produto_especifico = elem
-
-    return jsonify(produto_especifico)
+    return find_in_db(ident)
 
 
-@app.route('/products_categ', methods=['GET'])
-def products_by_categ():
+@app.route('/products/categorias/<ident>', methods=['GET'])
+def products_by_categ(ident):
     """
     Retorna os produtos de determinada categoria
     :param: id: o id da categoria no request
     """
-    if 'id_categoria' in request.args:
-        n_categoria = int(request.args['id_categoria'])
-    else:
-        return 'Error: No id_categoria provided'
-
-    verify_bounds(n_categoria, len(json_products))
-
-    produtos_categoria = []
-    for elem in json_products:
-        if elem['id_categoria'] == n_categoria:
-            produtos_categoria.append(elem)
-
-    return jsonify(produtos_categoria)
+    return find_in_db(ident, 'id_categoria')
 
 
-@app.route('/products_parceiro', methods=['GET'])
-def products_by_partner():
+@app.route('/products/parceiros/<ident>', methods=['GET'])
+def products_by_partner(ident):
     """
     Retorna todos os produtos de determinado parceiro
     :param: id: o id do parceiro no request
     """
-    if 'id_parceiro' in request.args:
-        n_parceiro = int(request.args['id_parceiro'])
-    else:
-        return 'Error: No id_parceiro provided'
-
-    # changed
-    produtos_parceiro = []
-    for elem in json_products:
-        if elem['id_parceiro'] == n_parceiro:
-            produtos_parceiro.append(elem)
-
-    return jsonify(produtos_parceiro)
+    return find_in_db(ident, 'id_parceiro')
 
 
-@app.route('/product_caract', methods=['GET'])
-def product_caract():
+@app.route('/products/<ident>/caract', methods=['GET'])
+def product_caract(ident):
     """
     Retorna a característica de um produto específico
     :param: id: o id do produto no request
     """
-    if 'id' in request.args:
-        n_id = int(request.args['id'])
-    else:
-        return 'Error: No id provided'
-
-    verify_bounds(n_id, len(json_products))
-
-    produto_especifico = []
-    for elem in json_products:
-        if elem['id'] == n_id:
-            produto_especifico = elem['caracteristicas']
-
-    return jsonify(produto_especifico)
+    return find_in_db(ident, 'caracteristicas')
 
 
-@app.route('/parceiros', methods=['GET'])
+@app.route('/products/parceiros', methods=['GET'])
 def partners():
     """
     Retorna todos os parceiros da base
@@ -137,7 +85,7 @@ def partners():
     return jsonify(json_partners)
 
 
-@app.route('/categorias', methods=['GET'])
+@app.route('/products/categorias', methods=['GET'])
 def categories():
     """
     Retorna todas as categorias da base
@@ -164,20 +112,7 @@ def required_for_logic():
     if request.method == 'GET':
         return render_template('envia.html')
     elif request.method == 'POST':
-        if 'file' not in request.files:
-            print('No file part')
-            return redirect(request.url)
-
-        file = request.files['file']
-
-        if file.filename == '':
-            print('No selected file')
-            return redirect(request.url)
-
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+        upload_for_partner()
         return redirect('/')
     return ''
 
@@ -262,18 +197,24 @@ def cotacao():
             "id_produto": list(request.form['id_p'])
         }
 
+
+        # Lê da entrada
         id_produto = int(request.form['id_p'])
         file_num = int(request.form['rg'])
         show_products = json.load(open('data/show_products.json', 'r'))
 
+        # Adiciona o produto desejado, se estiver disponível
         if contains_id(show_products, id_produto):
             for elem in show_products:
                 if elem['id'] == id_produto:
                     produtos_cliente.setdefault(file_num, []).append(elem)
                     break
 
+            # Tira duplicatas se o produto já existir na lista do cliente
             produtos_cliente[file_num] = remove_duplicates(produtos_cliente[file_num])
 
+            # Salva em um arquivo os produtos que o cliente deseja, com sua identificação
+            # na base.
             if cliente_info:
                 file_name = 'users/%d.json' % file_num
                 with open(file_name, 'r+') as f:
@@ -442,6 +383,47 @@ def allowed_file(filename):
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def return_produto_id(n_id):
+    for elem in json_products:
+        if elem['id'] == n_id:
+            produto_especifico = elem
+            return produto_especifico
+
+
+def return_by_filter(n_id, prod_json, search_for):
+    produtos = []
+    for elem in prod_json:
+        if elem[search_for] == n_id:
+            produtos.append(elem)
+    return produtos
+
+
+def find_in_db(ident, s=''):
+    num = int(ident)
+    verify_bounds(num, len(json_products))
+    if s != '':
+        produto = return_by_filter(num, json_products, s)
+    else:
+        produto = return_produto_id(ident)
+    return jsonify(produto)
+
+
+def upload_for_partner():
+    if 'file' not in request.files:
+        print('No file part')
+        return redirect(request.url)
+
+    file = request.files['file']
+
+    if file.filename == '':
+        print('No selected file')
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 
 app.run(threaded=True)

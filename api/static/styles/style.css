@@ -66,10 +66,14 @@ input[type=submit]:hover {
 }
 
 /* Change color of dropdown links on hover */
-.drop-content a:hover {background-color: #ddd}
+.drop-content a:hover {
+  background-color: #ddd;
+}
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display: contents;}
+.show {
+  display: contents;
+}
 
 .header {
 	background-color: #448AFF;
@@ -83,8 +87,11 @@ input[type=submit]:hover {
 .card {
 	background-color: #dddddd;
 	padding: 1.2em 1.2em;
-	margin: 1.2em 1.2em;
-	float: left;
+  margin-bottom: 50px;
+  margin-right: 1.2em;
+  margin-left: 1.2em;
+  margin-top: 0;
+  float: left;
 	text-align: center;
 	color: #333333;
 	width: 27.35%;
@@ -93,16 +100,15 @@ input[type=submit]:hover {
 }
 
 .footer {
-	background-color: #757575;
+	background-color: #333333;
  	width: 100%;
- 	height: 50px;
+ 	height: 30px;
 	position: fixed;
 	bottom: 0;
-	left: 0;
 	margin: 0;
-  padding: 0;
   text-align: center;
   float: left;
+  color: #eeeeee;
 }
 
 .special-div {
