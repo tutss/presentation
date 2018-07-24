@@ -1,6 +1,7 @@
 import flask
 import json
 import os
+from datetime import datetime
 from flask import request, jsonify, render_template, redirect
 from werkzeug.utils import secure_filename
 
@@ -22,6 +23,10 @@ json_categories = json.load(open('data/categories.json', 'r'))
 produtos_cliente = {}
 usuario = 0
 id_para_checar = 0
+
+
+# todo: mover metodos auxiliares para outra classe
+# todo: adicionar logs
 
 
 @app.route('/', methods=['GET'])
@@ -47,7 +52,7 @@ def product_by_id(ident):
 
     :param: id: o id do produto no request
     """
-    return find_in_db(ident)
+    return jsonify(find_in_db(ident))
 
 
 @app.route('/products/categorias/<ident>', methods=['GET'])
@@ -74,7 +79,8 @@ def product_caract(ident):
     Retorna a característica de um produto específico
     :param: id: o id do produto no request
     """
-    return find_in_db(ident, 'caracteristicas')
+    produto = find_in_db(ident)
+    return jsonify(produto['caracteristicas'])
 
 
 @app.route('/products/parceiros', methods=['GET'])
@@ -118,60 +124,30 @@ def required_for_logic():
 
 
 # Método de exemplo
-@app.route('/recebe_produtos_inverse', methods=['GET'])
+@app.route('/products/recebe/listar_inverso', methods=['GET'])
 def updated_listing_inverse():
     """
     Lista os novos produtos que chegariam do parceiro
 
     Esse método recebe os produtos nos quais não deve disponibilizar.
     """
-    ids = []
     new_products = json.load(open('data/updated_products.json', 'r'))
-    verify_product_kvs(new_products)
-    for elem in new_products:
-        ids.append(elem['id'])
-
-    show_products = json_products.copy()
-
-    for i in range(len(ids)):
-        del show_products[ids[i]]
-        ids[:] = [x - 1 for x in ids]
-
-    with open('data/show_products.json', 'w') as f:
-        json.dump(show_products, f)
-
-    return jsonify(show_products)
+    ids = return_ids(new_products)
+    show = del_upd_inverse(ids, json_products)
+    return show
 
 
-@app.route('/recebe_produtos_order', methods=['GET'])
+@app.route('/products/recebe/listar_ordem', methods=['GET'])
 def updated_listing_order():
     """
     Lista os novos produtos que chegariam do parceiro
 
     Esse método recebe os produtos nos quais  deve disponibilizar.
     """
-    ids = []
     new_products = json.load(open('data/order_updated_products.json', 'r'))
-    verify_product_kvs(new_products)
-    for elem in new_products:
-        ids.append(elem['id'])
-
-    show_products = json_products.copy()
-    first_to_remove = ids[0]
-    partner = show_products[first_to_remove]['id_parceiro']
-    filtered_products = []
-
-    for product in show_products:
-        if product['id_parceiro'] == partner:
-            if product['id'] in ids:
-                filtered_products.append(product)
-        else:
-            filtered_products.append(product)
-
-    with open('data/show_products.json', 'w') as f:
-            json.dump(filtered_products, f)
-
-    return jsonify(filtered_products)
+    ids = return_ids(new_products)
+    show = del_upd_order(ids, json_products)
+    return show
 
 
 @app.route('/cotacao', methods=['GET', 'POST'])
@@ -183,69 +159,45 @@ def cotacao():
     if request.method == 'GET':
         return render_template('form.html')
     elif request.method == 'POST':
-        check_fields = 'name' or 'age' or 'cpf' or 'rg' or 'profissao'
-        if check_fields not in request.form:
-            print('Missing fields')
-            return redirect(request.url)
+        fields = ['name', 'age', 'cpf', 'rg', 'profissao']
+        check_fields(fields)
 
-        cliente_info = {
-            "nome": str(request.form['name']),
-            "age": int(request.form['age']),
-            "cpf": int(request.form['cpf']),
-            "rg": int(request.form['rg']),
-            "profissao": str(request.form['profissao']),
-            "id_produto": list(request.form['id_p'])
-        }
-
+        cliente_info = parse_user_data()
 
         # Lê da entrada
         id_produto = int(request.form['id_p'])
-        file_num = int(request.form['rg'])
+        rg_user = int(request.form['rg'])
         show_products = json.load(open('data/show_products.json', 'r'))
 
-        # Adiciona o produto desejado, se estiver disponível
-        if contains_id(show_products, id_produto):
-            for elem in show_products:
-                if elem['id'] == id_produto:
-                    produtos_cliente.setdefault(file_num, []).append(elem)
-                    break
+        cotar_produto(show_products, id_produto, rg_user, cliente_info)
 
-            # Tira duplicatas se o produto já existir na lista do cliente
-            produtos_cliente[file_num] = remove_duplicates(produtos_cliente[file_num])
+        assert_user(rg_user, id_produto)
 
-            # Salva em um arquivo os produtos que o cliente deseja, com sua identificação
-            # na base.
-            if cliente_info:
-                file_name = 'users/%d.json' % file_num
-                with open(file_name, 'r+') as f:
-                    if os.path.getsize(file_name) <= 0:
-                        print('loop do vazio')
-                        json.dump(cliente_info, f)
-                    else:
-                        data = f.read()
-                        dict_data = json.loads(data)
-                        if bool(dict_data):
-                            dict_data['id_produto'].append(str(id_produto))
-                        f.seek(0)
-                        f.truncate()
-                        json.dump(dict_data, f)
+        s = '/contrata/%s/%s' % (str(rg_user), str(id_produto))
 
-            # DEBUG
-            # for key, value in produtos_cliente.items():
-            #     print('\ncliente: {key} e o valor: {valor}\n'.format(key=key, valor=value))
-        else:
-            return 'Error: Product not available'
-
-        usuario = file_num
-        id_para_checar = id_produto
-
-        return redirect('/contrata')
+        return redirect(s)
 
     return ''
 
 
-@app.route('/contrata', methods=['GET', 'POST'])
-def contrata_produto():
+def cotar_produto(produtos, produto_id, user, user_info):
+    # Adiciona o produto desejado, se estiver disponível
+    if contains_id(produtos, produto_id):
+        check_for_product(produto_id, user, produtos)
+
+        produtos_cliente[user] = remove_duplicates(produtos_cliente[user])
+
+        save_products(user_info, produto_id)
+
+        # DEBUG
+        # for key, value in produtos_cliente.items():
+        #     print('\ncliente: {key} e o valor: {valor}\n'.format(key=key, valor=value))
+    else:
+        return 'Error: Product not available'
+
+
+@app.route('/contrata/<user>/<prod_id>', methods=['GET', 'POST'])
+def contrata_produto(user, prod_id):
     """
     Simula a confirmação de contrato de um produto,
     feita pelo cliente
@@ -257,22 +209,20 @@ def contrata_produto():
             option = int(request.form['activity'])
             if not option:
                 produtos_cliente[usuario].pop()
+            log_confirmation(user, prod_id)
             return redirect('/cotacao')
 
 
-@app.route('/consulta_produtos', methods=['GET'])
-def consulta_produtos_cliente():
+@app.route('/usuarios/<ident>/consulta_produtos', methods=['GET'])
+def consulta_produtos_cliente(ident):
     """
     Confere os produtos contratados pelo cliente
     """
-    if request.args.get('cliente') is None:
-        return 'Error: missing cliente argument'
-
-    cliente = int(request.args.get('cliente'))
+    cliente = int(ident)
     return jsonify(produtos_cliente[cliente])
 
 
-@app.route('/cancelar_produto', methods=['GET', 'POST'])
+@app.route('/usuarios/cancelar_produto', methods=['GET', 'POST'])
 def cancelar_produto():
     """
     Cancela um produto previamente contratado pelo cliente
@@ -280,26 +230,16 @@ def cancelar_produto():
     if request.method == 'GET':
         return render_template('cancela.html')
     elif request.method == 'POST':
-        check_fields = 'id_p' or 'rg'
-        if check_fields not in request.form:
-            print('Missing fields')
-            return redirect(request.url)
+        fields = ['id_p', 'rg']
+        check_fields(fields)
 
         user = int(request.form['rg'])
         id_remover = int(request.form['id_p'])
+        motivo = str(request.form['motivo'])
 
-        if user in produtos_cliente.keys():
-            produtos = produtos_cliente[user]
-            if contains_id(produtos, id_remover):
-                for i in range(len(produtos)):
-                    produto = produtos[i]
-                    if produto['id'] == id_remover:
-                        produtos.remove(produto)
-                        break
-            else:
-                return 'Invalid ID'
-        else:
-            return 'User unavailable'
+        log_cancelamento(user, id_remover, motivo)
+
+        cancelamento_produto(user, id_remover)
 
         return redirect('/cotacao')
 
@@ -365,15 +305,31 @@ def verify_product_kvs(produtos_entrada):
                 if valor_esperado == value:
                     pass
                 else:
-                    log_file = open('log.txt', 'a')
-                    string_log = '%s com valores adulterados pelo parceiro %d\n' % (produto_para_checar['nome'],\
-                                                                                  produto_para_checar['id_parceiro'])
+                    log_file = open('data/logs/log.txt', 'a')
+                    string_log = '%s com valores adulterados pelo parceiro %d\n' % \
+                                 (produto_para_checar['nome'], produto_para_checar['id_parceiro'])
+
                     string_log_expected = 'Esperado: {valor_esperado}\nRecebido: {value}\n\n'\
                         .format(valor_esperado=valor_esperado, value=value)
+
                     log_file.write(string_log)
                     log_file.write(string_log_expected)
                     log_file.close()
     return
+
+
+def log_confirmation(user, produto):
+    log_file = open('data/logs/confirmacoes.txt', 'a')
+    s = 'Usuário %s contratou o produto %s - %s\n' % (user, produto, str(datetime.now()))
+    log_file.write(s)
+    log_file.close()
+
+
+def log_cancelamento(user, produto, motivo):
+    log_file = open('data/logs/cancelamentos.txt', 'a')
+    s = 'Usuário %d fez o cancelamento do produto %d - %s\n Motivo: %s' % (user, produto, str(datetime.now()), motivo)
+    log_file.write(s)
+    log_file.close()
 
 
 def allowed_file(filename):
@@ -404,10 +360,9 @@ def find_in_db(ident, s=''):
     num = int(ident)
     verify_bounds(num, len(json_products))
     if s != '':
-        produto = return_by_filter(num, json_products, s)
+        return jsonify(return_by_filter(num, json_products, s))
     else:
-        produto = return_produto_id(ident)
-    return jsonify(produto)
+        return return_produto_id(num)
 
 
 def upload_for_partner():
@@ -424,6 +379,112 @@ def upload_for_partner():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+
+def del_upd_inverse(ids, json_produtos):
+    show = json_produtos.copy()
+    copy_ids = ids.copy()
+    for i in range(len(ids)):
+        del show[copy_ids[i]]
+        copy_ids[:] = [x - 1 for x in copy_ids]
+    with open('data/show_products.json', 'w') as f:
+        json.dump(show, f)
+    return jsonify(show)
+
+
+def del_upd_order(ids, produtos):
+    show = produtos.copy()
+    first_to_remove = ids[0]
+    partner = show[first_to_remove]['id_parceiro']
+
+    produtos_filtered = []
+    for product in show:
+        if product['id_parceiro'] == partner:
+            if product['id'] in ids:
+                produtos_filtered.append(product)
+        else:
+            produtos_filtered.append(product)
+
+    with open('data/show_products.json', 'w') as f:
+        json.dump(produtos_filtered, f)
+
+    return jsonify(produtos_filtered)
+
+
+def return_ids(new_prod):
+    ids = []
+    verify_product_kvs(new_prod)
+    for elem in new_prod:
+        ids.append(elem['id'])
+    return ids
+
+
+def assert_user(user, produto):
+    usuario = user
+    id_para_checar = produto
+    return
+
+
+def check_fields(fields):
+    for field in fields:
+        if field not in request.form:
+            print('Missing fields')
+            return redirect(request.url)
+
+
+def parse_user_data():
+    data = {
+            "nome": str(request.form['name']),
+            "age": int(request.form['age']),
+            "cpf": int(request.form['cpf']),
+            "rg": int(request.form['rg']),
+            "profissao": str(request.form['profissao']),
+            "id_produto": list(request.form['id_p'])
+        }
+    return data
+
+
+def check_for_product(id_produto, user, produtos):
+    for elem in produtos:
+        if elem['id'] == id_produto:
+            produtos_cliente.setdefault(user, []).append(elem)
+            break
+    return
+
+
+def save_products(user_info, produto):
+    if user_info:
+        file_name = 'users/%d.json' % user_info['rg']
+        with open(file_name, 'r+') as f:
+            if os.path.getsize(file_name) <= 0:
+                json.dump(user_info, f)
+            else:
+                data = f.read()
+                dict_data = json.loads(data)
+                if bool(dict_data):
+                    dict_data['id_produto'].append(str(produto))
+                dict_data['id_produto'] = remove_duplicates(dict_data['id_produto'])
+                f.seek(0)
+                f.truncate()
+                json.dump(dict_data, f)
+    else:
+        return 'Error: os dados não foram enviados'
+    return
+
+
+def cancelamento_produto(user, produto_id):
+    if user in produtos_cliente.keys():
+        produtos = produtos_cliente[user]
+        if contains_id(produtos, produto_id):
+            for i in range(len(produtos)):
+                produto = produtos[i]
+                if produto['id'] == produto_id:
+                    produtos.remove(produto)
+                    break
+        else:
+            return 'Invalid ID'
+    else:
+        return 'User unavailable'
 
 
 app.run(threaded=True)
