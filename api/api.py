@@ -26,7 +26,7 @@ id_para_checar = 0
 
 
 # todo: mover metodos auxiliares para outra classe
-
+# todo: quando cancelar, tirar do json do usuario
 
 @app.route('/', methods=['GET'])
 def home():
@@ -52,6 +52,22 @@ def product_by_id(ident):
     :param: id: o id do produto no request
     """
     return jsonify(find_in_db(ident))
+
+
+@app.route('/products/parceiros', methods=['GET'])
+def partners():
+    """
+    Retorna todos os parceiros da base
+    """
+    return jsonify(json_partners)
+
+
+@app.route('/products/categorias', methods=['GET'])
+def categories():
+    """
+    Retorna todas as categorias da base
+    """
+    return jsonify(json_categories)
 
 
 @app.route('/products/categorias/<ident>', methods=['GET'])
@@ -80,22 +96,6 @@ def product_caract(ident):
     """
     produto = find_in_db(ident)
     return jsonify(produto['caracteristicas'])
-
-
-@app.route('/products/parceiros', methods=['GET'])
-def partners():
-    """
-    Retorna todos os parceiros da base
-    """
-    return jsonify(json_partners)
-
-
-@app.route('/products/categorias', methods=['GET'])
-def categories():
-    """
-    Retorna todas as categorias da base
-    """
-    return jsonify(json_categories)
 
 
 # Método para exemplo
@@ -222,8 +222,16 @@ def cancelar_produto():
 
         log_cancelamento(user, id_remover, motivo)
         cancelamento_produto(user, id_remover)
-        return redirect('/cotacao')
+        return redirect('/usuarios/cancelar_produto/confirmado')
     return ''
+
+
+@app.route('/usuarios/cancelar_produto/confirmado', methods=['GET', 'POST'])
+def confirmar_cancelamento():
+    if request.method == 'GET':
+        return render_template('confirma_cancelamento.html')
+    elif request.method == 'POST':
+        return redirect('/cotacao')
 
 
 #########################################
@@ -320,7 +328,7 @@ def log_cancelamento(user, produto, motivo):
     :param motivo: motivação para cancelamento
     """
     log_file = open('data/logs/cancelamentos.txt', 'a')
-    s = 'Usuário %d fez o cancelamento do produto %d - %s\n Motivo: %s' % (user, produto, str(datetime.now()), motivo)
+    s = 'Usuário %d fez o cancelamento do produto %d - %s\nMotivo: %s' % (user, produto, str(datetime.now()), motivo)
     log_file.write(s)
     log_file.close()
 
