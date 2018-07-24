@@ -26,7 +26,6 @@ id_para_checar = 0
 
 
 # todo: mover metodos auxiliares para outra classe
-# todo: adicionar logs
 
 
 @app.route('/', methods=['GET'])
@@ -180,22 +179,6 @@ def cotacao():
     return ''
 
 
-def cotar_produto(produtos, produto_id, user, user_info):
-    # Adiciona o produto desejado, se estiver disponível
-    if contains_id(produtos, produto_id):
-        check_for_product(produto_id, user, produtos)
-
-        produtos_cliente[user] = remove_duplicates(produtos_cliente[user])
-
-        save_products(user_info, produto_id)
-
-        # DEBUG
-        # for key, value in produtos_cliente.items():
-        #     print('\ncliente: {key} e o valor: {valor}\n'.format(key=key, valor=value))
-    else:
-        return 'Error: Product not available'
-
-
 @app.route('/contrata/<user>/<prod_id>', methods=['GET', 'POST'])
 def contrata_produto(user, prod_id):
     """
@@ -238,11 +221,8 @@ def cancelar_produto():
         motivo = str(request.form['motivo'])
 
         log_cancelamento(user, id_remover, motivo)
-
         cancelamento_produto(user, id_remover)
-
         return redirect('/cotacao')
-
     return ''
 
 
@@ -319,6 +299,12 @@ def verify_product_kvs(produtos_entrada):
 
 
 def log_confirmation(user, produto):
+    """
+    Log para confirmações
+
+    :param user: identificação do usuário
+    :param produto: identificação do produto
+    """
     log_file = open('data/logs/confirmacoes.txt', 'a')
     s = 'Usuário %s contratou o produto %s - %s\n' % (user, produto, str(datetime.now()))
     log_file.write(s)
@@ -326,6 +312,13 @@ def log_confirmation(user, produto):
 
 
 def log_cancelamento(user, produto, motivo):
+    """
+    Log para identificação do cancelamento
+
+    :param user: identificação do usuário
+    :param produto: identificação do produto
+    :param motivo: motivação para cancelamento
+    """
     log_file = open('data/logs/cancelamentos.txt', 'a')
     s = 'Usuário %d fez o cancelamento do produto %d - %s\n Motivo: %s' % (user, produto, str(datetime.now()), motivo)
     log_file.write(s)
@@ -342,6 +335,10 @@ def allowed_file(filename):
 
 
 def return_produto_id(n_id):
+    """
+    Retorna um produto, dado um id
+    :param n_id: identificação do produto
+    """
     for elem in json_products:
         if elem['id'] == n_id:
             produto_especifico = elem
@@ -349,6 +346,14 @@ def return_produto_id(n_id):
 
 
 def return_by_filter(n_id, prod_json, search_for):
+    """
+    Retorna uma lista de produtos, dado o parâmetro de busca,
+    tanto para o tipo de identificação quanto para a string de busca
+
+    :param n_id: parâmetro para identificação
+    :param prod_json: lista de produtos
+    :param search_for: string para busca
+    """
     produtos = []
     for elem in prod_json:
         if elem[search_for] == n_id:
@@ -357,6 +362,14 @@ def return_by_filter(n_id, prod_json, search_for):
 
 
 def find_in_db(ident, s=''):
+    """
+    Procura dentro dos produtos, dado um identificador e uma string.
+    Caso a string seja vazia, procura pelo id. Caso ela seja não vazia,
+    a utiliza como busca
+
+    :param ident: identificação do produto
+    :param s: parâmetro de busca
+    """
     num = int(ident)
     verify_bounds(num, len(json_products))
     if s != '':
@@ -366,6 +379,9 @@ def find_in_db(ident, s=''):
 
 
 def upload_for_partner():
+    """
+    Faz o upload da file localmente (como simulação)
+    """
     if 'file' not in request.files:
         print('No file part')
         return redirect(request.url)
@@ -382,6 +398,13 @@ def upload_for_partner():
 
 
 def del_upd_inverse(ids, json_produtos):
+    """
+    Faz as deleções ou updates na lista de produtos a ser exibida para o usuário.
+    Recebe na forma: produtos a não exibir
+
+    :param ids: lista de ids dos produtos
+    :param json_produtos: lista de produtos
+    """
     show = json_produtos.copy()
     copy_ids = ids.copy()
     for i in range(len(ids)):
@@ -393,6 +416,13 @@ def del_upd_inverse(ids, json_produtos):
 
 
 def del_upd_order(ids, produtos):
+    """
+    Faz as deleções ou updates na lista de produtos a ser exibida para o usuário
+    Recebe na forma: produtos a exibir
+
+    :param ids: lista de ids dos produtos
+    :param produtos: lista de produtos
+    """
     show = produtos.copy()
     first_to_remove = ids[0]
     partner = show[first_to_remove]['id_parceiro']
@@ -412,6 +442,10 @@ def del_upd_order(ids, produtos):
 
 
 def return_ids(new_prod):
+    """
+    Retorna os ids presentes na lista de produtos
+    :param new_prod: lista de produtos
+    """
     ids = []
     verify_product_kvs(new_prod)
     for elem in new_prod:
@@ -420,12 +454,21 @@ def return_ids(new_prod):
 
 
 def assert_user(user, produto):
+    """
+    Torna os valores de usuário e do id para os certos
+    :param user: identificação do usuário
+    :param produto: identificação do produto
+    """
     usuario = user
     id_para_checar = produto
     return
 
 
 def check_fields(fields):
+    """
+    Checa se cada campo está na lista de campos
+    :param fields: lista de campos
+    """
     for field in fields:
         if field not in request.form:
             print('Missing fields')
@@ -433,6 +476,9 @@ def check_fields(fields):
 
 
 def parse_user_data():
+    """
+    Forma um dicionário (dict) com as informações do usuário
+    """
     data = {
             "nome": str(request.form['name']),
             "age": int(request.form['age']),
@@ -445,6 +491,13 @@ def parse_user_data():
 
 
 def check_for_product(id_produto, user, produtos):
+    """
+    Adiciona um produto a lista de produtos contratados pelo usuário
+
+    :param id_produto: identificação do produto
+    :param user: identificação do usuário
+    :param produtos: lista de produtos
+    """
     for elem in produtos:
         if elem['id'] == id_produto:
             produtos_cliente.setdefault(user, []).append(elem)
@@ -453,6 +506,12 @@ def check_for_product(id_produto, user, produtos):
 
 
 def save_products(user_info, produto):
+    """
+    Salva o produto contratado pelo usuário
+
+    :param user_info: informações do usuário
+    :param produto: identificação do produto
+    """
     if user_info:
         file_name = 'users/%d.json' % user_info['rg']
         with open(file_name, 'r+') as f:
@@ -473,6 +532,12 @@ def save_products(user_info, produto):
 
 
 def cancelamento_produto(user, produto_id):
+    """
+    Cancela um produto
+
+    :param user: identificação do usuário
+    :param produto_id: identificação do produto
+    """
     if user in produtos_cliente.keys():
         produtos = produtos_cliente[user]
         if contains_id(produtos, produto_id):
@@ -485,6 +550,28 @@ def cancelamento_produto(user, produto_id):
             return 'Invalid ID'
     else:
         return 'User unavailable'
+
+
+def cotar_produto(produtos, produto_id, user, user_info):
+    """
+    Cota um produto para um usuário
+
+    :param produtos: lista de produtos
+    :param produto_id: id do produto
+    :param user: identificação do usuário
+    :param user_info: informações do usuário
+    """
+    if contains_id(produtos, produto_id):
+        check_for_product(produto_id, user, produtos)
+
+        produtos_cliente[user] = remove_duplicates(produtos_cliente[user])
+
+        save_products(user_info, produto_id)
+        # DEBUG
+        # for key, value in produtos_cliente.items():
+        #     print('\ncliente: {key} e o valor: {valor}\n'.format(key=key, valor=value))
+    else:
+        return 'Error: Product not available'
 
 
 app.run(threaded=True)
