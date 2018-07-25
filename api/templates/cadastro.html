@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>API PnP</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+	<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,700" rel="stylesheet">
+</head>
+<body>
+	<div class='header' id='main-header'>
+	    <h1 class='header' id='div_header'>API PnP</h1>
+	    <p class='header'>Teste para as chamadas da plataforma do PnP</p>
+	</div>
+	<br><br><br>
+	<div class='special-div'>
+		<form method=post enctype=multipart/form-data>
+			<label for="nome">Nome</label>
+			<p><input type="text" name=nome placeholder="Nome do produto"></p>
+			<label for="parceiro">Parceiro</label>
+			<p><input type="text" name=parceiro placeholder="Nome do parceiro"></p>
+			<label for="categoria">Categoria</label>
+			<p><input type="text" name=categoria placeholder="Categoria"></p>
+			<label for="id_ex">Identificação externa</label>
+			<p><input type="text" name=id_ex placeholder="Identificação externa"></p>
+			<label for="descricao">Descrição</label>
+			<p><input type="text" name=descricao placeholder="Descrição"></p>
+			<label>Características
+				<p><input type="text" name=chave_1 placeholder="Chave">
+				<input type="text" name=valor_1 placeholder="Valor">
+				</p>
+				<p><input type="text" name=chave_2 placeholder="Chave">
+				<input type="text" name=valor_2 placeholder="Valor">
+				</p>
+				<p><input type="text" name=chave_3 placeholder="Chave">
+				<input type="text" name=valor_3 placeholder="Valor">
+				</p>
+				<p><input type="text" name=chave_4 placeholder="Chave">
+				<input type="text" name=valor_4 placeholder="Valor">
+				</p>
+				<p><input type="text" name=chave_5 placeholder="Chave">
+				<input type="text" name=valor_5 placeholder="Valor">
+				</p>
+			</label>
+			
+			<input type="submit" value=Confirmar>
+		</form>
+	</div>
+</body>
+</html>

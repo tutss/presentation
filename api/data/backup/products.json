@@ -1,0 +1,98 @@
+[
+    {
+        "nome": "Produto A",
+        "id": 0,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 10,
+        "caracteristicas": {
+            "Regiao": ["São Paulo", "Itu", "Recife"],
+            "Numero de telas": 3,
+            "Definicao": "HD"
+        },
+        "descricao": "Produto A, muito bom para você"
+    },
+    {
+        "nome": "Produto B",
+        "id": 1,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 11,
+        "caracteristicas": {
+            "Regiao": ["Rio de Janeiro", "Itu", "Recife"],
+            "Número de telas": 4,
+            "Definicao": "4k"
+        },
+        "descricao": "Produto B, show"
+    },
+    {
+        "nome": "Produto C",
+        "id": 2,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 12,
+        "caracteristicas": {
+            "Regiao": ["São Paulo", "Itu", "Recife"],
+            "Numero de telas": 1,
+            "Definicao": "HD"
+        },
+        "descricao": "Produto C, simples"
+    },
+    {
+        "nome": "Produto D",
+        "id": 3,
+        "id_parceiro": 0,
+        "id_categoria": 1,
+        "id_externo": 13,
+        "caracteristicas": {
+            "Avaliãção": ["Salvador", "Itu", "Recife"],
+            "Numero de telas": 2,
+            "Definicao": "4k"
+        },
+        "descricao": "Produto D, uau"
+
+    },
+    {
+        "nome": "Produto E",
+        "id": 4,
+        "id_parceiro": 1,
+        "id_categoria": 2,
+        "id_externo": 10,
+        "caracteristicas": {
+            "Avaliação": "Ótima",
+            "Nota": 9.2,
+            "Ano": 2016,
+            "Valor": 40000
+        },
+        "descricao": "Produto E, carro para família"
+
+    },
+    {
+        "nome": "Produto F",
+        "id": 5,
+        "id_parceiro": 1,
+        "id_categoria": 2,
+        "id_externo": 11,
+        "caracteristicas": {
+            "Avaliação": "Ótima",
+            "Nota": 9.4,
+            "Ano": 2018,
+            "Valor": 50000
+        },
+        "descricao": "Produto F, uau"
+    },
+    {
+        "nome": "Produto G",
+        "id": 6,
+        "id_parceiro": 0,
+        "id_categoria": 2,
+        "id_externo": 14,
+        "caracteristicas": {
+            "Avaliação": "Boa",
+            "Nota": 8.4,
+            "Ano": 2015,
+            "Valor": 30000
+        },
+        "descricao": "Produto G, uau"
+    }
+]
