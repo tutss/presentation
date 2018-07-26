@@ -1,0 +1,8 @@
+Produto Bom com valores adulterados pelo parceiro 0
+Esperado: {'Telas': '5', 'Definição': 'HD', 'Download': 'Sim', 'Acesso pelo celular': 'Sim', 'Brinde ': 'Sim'}
+Recebido: {'Telas': '5', 'Definição': 'HD', 'Acesso pelo celular': 'Sim', 'Download': 'Sim', 'Simultaneo': 'Sim', 'Brinde': 'Sim'}
+
+Produto Bom com valores adulterados pelo parceiro 0
+Esperado: Produto para toda a família assistir
+Recebido: Serviço para toda a família
+

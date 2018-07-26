@@ -1,0 +1,1 @@
+Categoria cadastrada - {'id': 3, 'nome': 'Seguro de Automóvel', 'descricao': 'Seguro para carros'} 

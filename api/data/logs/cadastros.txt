@@ -1,3 +1,6 @@
-Produto cadastrado 2018-07-25 13:59:56.915048
-{'nome': 'Produto Bacana Novo', 'id': 9, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 18, 'caracteristicas': {'a': '7', 'ab': '8', 'abc': '9', 'abcd': '10', 'abcde': ''}, 'descricao': 'Produto para toda a família assistir'}
+Produto cadastrado 2018-07-26 14:35:03.281445
+{'nome': 'Produto Bom', 'id': 8, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 200, 'caracteristicas': {'Telas': '5', 'Definição': 'HD', 'Acesso pelo celular': 'Sim', 'Download': 'Sim', 'Simultaneo': 'Sim', 'Brinde': 'Sim'}, 'descricao': 'Serviço para toda a família'}
+
+Produto cadastrado 2018-07-26 15:01:55.401008
+{'nome': 'Produto Bom', 'id': 8, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 200, 'caracteristicas': {'Telas': '5', 'Definição': 'HD', 'Download': 'Sim', 'Acesso pelo celular': 'Sim', 'Brinde ': 'Sim'}, 'descricao': 'Produto para toda a família assistir'}
 

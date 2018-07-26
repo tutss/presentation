@@ -38,5 +38,38 @@
             "Valor": 30000
         },
         "descricao": "Produto G, uau"
+    },
+    {
+        "nome": "a",
+        "id": 7, 
+        "id_parceiro": 0, 
+        "id_categoria": 0, 
+        "id_externo": 0, 
+        "caracteristicas": {
+            "a": "1", 
+            "aa": "11", 
+            "aaa": "111",
+            "aaaa": "1111", 
+            "aaaaa": "11111",
+            "aaaaaa": "111111",
+            "aaaaaaa": "1111111"
+        },  
+        "descricao": "a"
+    }, 
+    {
+        "nome": "Produto Bom", 
+        "id": 8, 
+        "id_parceiro": 0, 
+        "id_categoria": 1, 
+        "id_externo": 200, 
+        "caracteristicas": {
+            "Telas": "5",
+            "Defini\u00e7\u00e3o": "HD",
+            "Acesso pelo celular": "Sim",
+            "Download": "Sim", 
+            "Simultaneo": "Sim", 
+            "Brinde": "Sim"
+        }, 
+        "descricao": "Servi\u00e7o para toda a fam\u00edlia"
     }
 ]

@@ -24,26 +24,38 @@
 			<p><input type="text" name=id_ex placeholder="Identificação externa"></p>
 			<label for="descricao">Descrição</label>
 			<p><input type="text" name=descricao placeholder="Descrição"></p>
-			<label>Características
-				<p><input type="text" name=chave_1 placeholder="Chave">
-				<input type="text" name=valor_1 placeholder="Valor">
+			<label id="caracteristicas">Características
+				<p class="custom-key"><input type="text" name=chave placeholder="Chave">
+				<input type="text" name=valor placeholder="Valor">
 				</p>
-				<p><input type="text" name=chave_2 placeholder="Chave">
-				<input type="text" name=valor_2 placeholder="Valor">
+				<p class="custom-key"><input type="text" name=chave placeholder="Chave">
+				<input type="text" name=valor placeholder="Valor">
 				</p>
-				<p><input type="text" name=chave_3 placeholder="Chave">
-				<input type="text" name=valor_3 placeholder="Valor">
+				<p class="custom-key"><input type="text" name=chave placeholder="Chave">
+				<input type="text" name=valor placeholder="Valor">
 				</p>
-				<p><input type="text" name=chave_4 placeholder="Chave">
-				<input type="text" name=valor_4 placeholder="Valor">
+				<p class="custom-key"><input type="text" name=chave placeholder="Chave">
+				<input type="text" name=valor placeholder="Valor">
 				</p>
-				<p><input type="text" name=chave_5 placeholder="Chave">
-				<input type="text" name=valor_5 placeholder="Valor">
+				<p class="custom-key"><input type="text" name=chave placeholder="Chave">
+				<input type="text" name=valor placeholder="Valor">
 				</p>
 			</label>
-			
 			<input type="submit" value=Confirmar>
 		</form>
+		<button id="btnAdd">Adicionar campo</button>
 	</div>
+
+	<script type="text/javascript">
+		function addKey(){
+			var customKeyEls = document.getElementsByClassName('custom-key')
+			var count = customKeyEls.length + 1;
+			var el = document.getElementById('caracteristicas')
+			el.innerHTML += '<p class="custom-key"><input type="text" name=chave placeholder="Chave">'
+				+'<input type="text" name=valor placeholder="Valor">'
+				+'</p>'
+		}
+		document.getElementById('btnAdd').onclick = addKey;
+	</script>
 </body>
 </html>

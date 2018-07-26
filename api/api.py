@@ -1,8 +1,6 @@
 import flask
 import json
-# import os
 from flask import request, jsonify, render_template, redirect
-# from werkzeug.utils import secure_filename
 from funcionalidades import product_logic as pl
 
 # salva o upload em json
@@ -14,12 +12,6 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# lê do nosso banco
-# json_products = json.load(open('data/products.json', 'r'))
-# json_partners = json.load(open('data/partners.json', 'r'))
-# json_categories = json.load(open('data/categories.json', 'r'))
-
-# todo: pensar em formas dinamicas para receber input
 # todo: quando cancelar, tirar do json do usuario
 
 
@@ -132,7 +124,7 @@ def cadastro_categoria():
     if request.method == 'GET':
         return render_template('cadastro_categoria.html')
     elif request.method == 'POST':
-        fields = ['nome']
+        fields = ['nome', 'descricao']
         pl.check_fields(fields)
         dados = pl.parse_categoria()
         pl.log_categoria(dados)

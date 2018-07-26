@@ -1,14 +1,1 @@
-[
-	{
-		"id": 0,
-		"nome": "Seguro de Vida"
-	},
-	{
-		"id": 1,
-		"nome": "Serviço de Streaming"
-	},
-	{
-		"id": 2,
-		"nome": "Serviço automotivo"
-	}
-]
+[{"id": 0, "nome": "Servi\u00e7o de festas", "descricao": "Serviços de eventos e festas"}, {"id": 1, "nome": "Servi\u00e7o de Streaming", "descricao": "Serviço para vídeos"}, {"id": 2, "nome": "Servi\u00e7o automotivo", "descricao": "Venda de automóveis"}, {"id": 3, "nome": "Seguro de Autom\u00f3vel", "descricao": "Seguro para carros"}]

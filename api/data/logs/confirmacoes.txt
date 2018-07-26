@@ -1,1 +1,3 @@
-Usuário 0 contratou o produto 0 - 2018-07-25 13:58:52.547545
+Usuário 0 contratou o produto 0 - 2018-07-26 14:38:49.738757
+Usuário 0 contratou o produto 2 - 2018-07-26 14:39:16.194107
+Usuário 0 contratou o produto 6 - 2018-07-26 14:39:29.689613
