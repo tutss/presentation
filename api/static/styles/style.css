@@ -122,6 +122,15 @@ input[type=submit]:hover {
     margin-bottom: 1.1em;
 }
 
+.prod-div {
+  text-align: center;
+  /*background-color: #dddddd;*/
+  margin: 20px 550px;
+  /*padding-left: 10px;*/
+  /*padding-right: 10px;*/
+  /*width: 40%;*/
+}
+
 #div_header {
   margin-bottom: 20px;
   font-size: 80px;

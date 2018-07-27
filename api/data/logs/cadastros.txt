@@ -1,6 +1,3 @@
-Produto cadastrado 2018-07-26 14:35:03.281445
-{'nome': 'Produto Bom', 'id': 8, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 200, 'caracteristicas': {'Telas': '5', 'Definição': 'HD', 'Acesso pelo celular': 'Sim', 'Download': 'Sim', 'Simultaneo': 'Sim', 'Brinde': 'Sim'}, 'descricao': 'Serviço para toda a família'}
-
-Produto cadastrado 2018-07-26 15:01:55.401008
-{'nome': 'Produto Bom', 'id': 8, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 200, 'caracteristicas': {'Telas': '5', 'Definição': 'HD', 'Download': 'Sim', 'Acesso pelo celular': 'Sim', 'Brinde ': 'Sim'}, 'descricao': 'Produto para toda a família assistir'}
+Produto cadastrado 2018-07-27 11:28:39.461813
+{'nome': 'Produto Bom', 'id': 8, 'id_parceiro': 0, 'id_categoria': 1, 'id_externo': 15, 'caracteristicas': {'Telas': '5', 'Definição': 'HD', 'Brinde': 'Sim', 'Acesso pelo celular': 'Sim', 'Download': 'Sim'}, 'descricao': 'Produto para toda a família assistir'}
 

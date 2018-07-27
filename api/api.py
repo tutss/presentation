@@ -3,14 +3,9 @@ import json
 from flask import request, jsonify, render_template, redirect
 from funcionalidades import product_logic as pl
 
-# salva o upload em json
-UPLOAD_FOLDER = 'data/upload/'
-ALLOWED_EXTENSIONS = set('json')
-
 # configurações do flask
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # todo: quando cancelar, tirar do json do usuario
 
@@ -265,6 +260,7 @@ def contrata_produto(user, prod_id):
             option = int(request.form['activity'])
             if not option:
                 pl.produtos_cliente[pl.usuario].pop()
+                return redirect('/cotacao')
             pl.log_confirmation(user, prod_id)
             return redirect('/cotacao')
 
@@ -301,6 +297,9 @@ def cancelar_produto():
 
 @app.route('/usuarios/cancelar_produto/confirmado', methods=['GET', 'POST'])
 def confirmar_cancelamento():
+    """
+    Confirma o cancelamento do produto
+    """
     if request.method == 'GET':
         return render_template('confirma_cancelamento.html')
     elif request.method == 'POST':

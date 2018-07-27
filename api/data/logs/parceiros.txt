@@ -1,1 +1,1 @@
-Parceiro cadastrado - {'id': 2, 'nome': 'Empresa Boa', 'descricao': 'Empresa de serviços'} 
+Parceiro cadastrado - {'id': 3, 'nome': 'Empresa U', 'descricao': 'Fashion'} 
